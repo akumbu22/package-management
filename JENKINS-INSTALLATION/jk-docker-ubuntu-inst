@@ -40,6 +40,7 @@ AmazonS3FullAccess
 IAMFullAccess 
 AmazonVPCFullAccess
 #create a bucket
+e.g aws s3 mb s3://akumbu18.k8s.local OR aws s3api create-bucket --bucket (bucketname) --region (regionName) aws s3 ls (to see all buckets)
 
 
 
