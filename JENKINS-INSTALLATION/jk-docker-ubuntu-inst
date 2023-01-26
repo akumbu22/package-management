@@ -21,7 +21,17 @@ sudo su - jenkins     #run docker ps
 #install AWSCLI and KOPS
 sudo apt update -y
 sudo apt install unzip wget -y 
-su
+sudo curl https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip
+sudo apt install unzip python -y
+sudo unzip awscli-bundle.zip
+sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+#kops software
+sudo apt install wget -y
+sudo wget https://github.com/kubernetes/kops/releases/download/v1.18.2/kops-linux
+sudo chmod +x kops-linux-amd64
+sudo mv kops-linux-amd64 /usr/local/bin/kops
+#KUBECTL
+
 
 
 
