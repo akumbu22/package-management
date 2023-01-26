@@ -33,7 +33,14 @@ sudo mv kops-linux-amd64 /usr/local/bin/kops
 #KUBECTL
 sudo curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s 
 https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl sudo chmod +x ./kubectl sudo mv ./kubectl /usr/local/bin/kubectl
+#run aws s3 ls =no iam role yet so create and 
 #Attach an IAM role to the server
+AmazonEC2FullAccess 
+AmazonS3FullAccess
+IAMFullAccess 
+AmazonVPCFullAccess
+#create a bucket
+
 
 
 
