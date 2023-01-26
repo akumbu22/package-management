@@ -15,6 +15,14 @@ Jenkins -version
 # Add jenkins to docker group
 sudo usermod -aG docker jenkins
 sudo systemctl restart docker.service
+sudo echo "jenkins ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/jenkins
+sudo vi /etc/passwd
+sudo su - jenkins     #run docker ps
+#install AWSCLI and KOPS
+sudo apt update -y
+sudo apt install unzip wget -y 
+su
+
 
 
 sudo dnf install chkconfig java-devel
