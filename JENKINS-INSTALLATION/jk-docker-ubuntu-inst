@@ -9,11 +9,17 @@ java -version
 # Install Jenkins
 sudo wget -q -O  https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
 sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
-sudo dnf upgrade
-# Add required dependencies for the jenkins package
+sudo apt install jenkins
+sudo systemctl start jenkins
+Jenkins -version
+# Add jenkins to docker group
+sudo usermod -aG docker jenkins
+sudo systemctl restart docker.service
+
+
 sudo dnf install chkconfig java-devel
 sudo dnf install jenkins
-# Start Jenkins
+
 sudo systemctl daemon-reload  # To Register the Jenkins service 
 sudo systemctl start jenkins
 systemctl status jenkins
