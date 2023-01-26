@@ -1,3 +1,4 @@
+##Autor Akumbu
 sudo apt update -y
 sudo apt install docker.io -y
 sudo systemctl start docker
@@ -41,12 +42,19 @@ IAMFullAccess
 AmazonVPCFullAccess
 #create a bucket
 e.g aws s3 mb s3://akumbu18.k8s.local OR aws s3api create-bucket --bucket (bucketname) --region (regionName) aws s3 ls (to see all buckets)
+##Expose environment variable:
+# Add env variables in bashrc
+vi .bashrc------>paste the export
+# Give Unique Name And S3 Bucket which you created.
+export NAME=akumbu25.k8s.local-------------------------->cluster name
+export KOPS_STATE_STORE=s3://akumbu25.k8s.local--------->s3 bucket where info will be kept e.g logsfiles
+source .bashrc <-----then refresh
+#run echo $NAME ------> to see the clustername
+#Create and copy key into the cluster created so as to be able to access the cluster 
+ssh-keygen----->enter enter enter
+#create cluster now
 
 
-
-
-sudo dnf install chkconfig java-devel
-sudo dnf install jenkins
 
 sudo systemctl daemon-reload  # To Register the Jenkins service 
 sudo systemctl start jenkins
