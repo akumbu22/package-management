@@ -49,10 +49,33 @@ vi .bashrc------>paste the export
 export NAME=akumbu25.k8s.local-------------------------->cluster name
 export KOPS_STATE_STORE=s3://akumbu25.k8s.local--------->s3 bucket where info will be kept e.g logsfiles
 source .bashrc <-----then refresh
-#run echo $NAME ------> to see the clustername
+#run echo $NAME ------> to see the clustername that we defined
 #Create and copy key into the cluster created so as to be able to access the cluster 
 ssh-keygen----->enter enter enter
-#create cluster now
+#Create kubernetes cluster definitions on S3 bucket
+kops create cluster --zones us-east-1b --networking weave --master-size t2.medium --master-count 1 --node-size t2.medium --node-count=2 ${NAME}
+#copy the key into the cluster to enable communication
+kops create secret --name ${NAME} sshpublickey admin -i ~/.ssh/id_rsa.pub
+#Create kubernetes cluser
+ kops update cluster ${NAME} --yes
+#While creating is ongoing go to ur jk and access it on the web and intall s.plugins
+10) Validate your cluster(KOPS will take some time to create cluster ,Execute below commond after 3 or 4 mins)
+   kops validate cluster
+11) connect to the master node
+sh -i ~/.ssh/id_rsa ubuntu@ipAddress
+ssh -i ~/.ssh/id_rsa ubuntu@3.90.203.23
+11) To list nodes
+  kubectl get nodes 
+12) To Delete Cluster
+sudo kops delete cluster --name=${NAME} --state=${KOPS_STATE_STORE} --yes
+
+====================================================================================================
+
+13 # IF you want to SSH to Kubernetes Master or Nodes Created by KOPS. You can SSH From KOPS_Server
+
+sh -i ~/.ssh/id_rsa ubuntu@ipAddress ssh -i ~/.ssh/id_rsa ubuntu@3.90.203.23
+
+``
 
 
 
