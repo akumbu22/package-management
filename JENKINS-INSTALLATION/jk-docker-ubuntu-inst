@@ -7,7 +7,7 @@ sudo systemctl enable docker.service
 sudo apt install openjdk-11-jdk -y     ##java development kit
 java -version
 # Install Jenkins
-sudo wget -q -O  https://pkg.jenkins.io/redhat-stable/jenkins.repo                      /etc/yum.repos.d/jenkins.repo \
+sudo wget -q -O  https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key    /etc/yum.repos.d/jenkins.repo \
    
 sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
 sudo dnf upgrade
