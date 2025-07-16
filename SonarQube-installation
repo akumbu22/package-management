@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status
+set -e
+
+echo "🔧 Starting SonarQube installation on Red Hat Linux..."
+
+# Update system
+sudo yum update -y
+
+# Install Java (OpenJDK 17 is recommended for SonarQube 9.x+)
+sudo yum install -y java-17-openjdk-devel
+
+# Create a dedicated user for SonarQube
+sudo useradd -r -s /bin/false sonarqube
+
+# Install PostgreSQL
+sudo yum install -y postgresql-server postgresql-contrib
+sudo postgresql-setup initdb
+sudo systemctl enable postgresql
+sudo systemctl start postgresql
+
+# Configure PostgreSQL
+sudo -u postgres psql <<EOF
+CREATE USER sonar WITH ENCRYPTED PASSWORD 'sonarpass';
+CREATE DATABASE sonarqube OWNER sonar;
+GRANT ALL PRIVILEGES ON DATABASE sonarqube TO sonar;
+EOF
+
+# Download SonarQube (change version if needed)
+SONAR_VERSION="10.3.0.82913"
+cd /opt
+sudo curl -O https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-${SONAR_VERSION}.zip
+sudo yum install -y unzip
+sudo unzip sonarqube-${SONAR_VERSION}.zip
+sudo mv sonarqube-${SONAR_VERSION} sonarqube
+sudo chown -R sonarqube:sonarqube /opt/sonarqube
+
+# Configure SonarQube to use PostgreSQL
+sudo sed -i 's/#sonar.jdbc.username=/sonar.jdbc.username=sonar/' /opt/sonarqube/conf/sonar.properties
+sudo sed -i 's/#sonar.jdbc.password=/sonar.jdbc.password=sonarpass/' /opt/sonarqube/conf/sonar.properties
+sudo sed -i 's|#sonar.jdbc.url=jdbc:postgresql.*|sonar.jdbc.url=jdbc:postgresql://localhost/sonarqube|' /opt/sonarqube/conf/sonar.properties
+
+# Create a systemd service
+cat <<EOF | sudo tee /etc/systemd/system/sonarqube.service
+[Unit]
+Description=SonarQube service
+After=syslog.target network.target
+
+[Service]
+Type=forking
+User=sonarqube
+Group=sonarqube
+ExecStart=/opt/sonarqube/bin/linux-x86-64/sonar.sh start
+ExecStop=/opt/sonarqube/bin/linux-x86-64/sonar.sh stop
+LimitNOFILE=65536
+LimitNPROC=4096
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Reload systemd and enable SonarQube
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl enable sonarqube
+sudo systemctl start sonarqube
+
+echo "✅ SonarQube installation complete! Access it at: http://<your_server_ip>:9000"
