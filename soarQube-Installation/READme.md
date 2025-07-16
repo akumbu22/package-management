@@ -50,4 +50,55 @@ sudo chmod -R 775 /opt/sonarqube/
 sh /opt/sonarqube/bin/linux-x86-64/sonar.sh start 
 sh /opt/sonarqube/bin/linux-x86-64/sonar.sh status
 ```
+Alternative script
+## SonarQube Installation And Setup In AWS EC2 Redhat Instance.
+##### Prerequisite
++ AWS Acccount.
++ Create Redhat EC2 T2.medium Instance with 4GB RAM.
++ Create Security Group and open Required ports.
+   + 9000 ..etc
++ Attach Security Group to EC2 Instance.
++ Install java openJDK 1.8+ for SonarQube version 10.7.0.96327
+  ## Create sonar user to manage the SonarQube server
+```sh
+#As a good security practice, SonarQuber Server is not advised to run sonar service as a root user, 
+# create a new user called sonar and grant sudo access to manage sonar services as follows
+
+sudo useradd sonar
+# Grand sudo access to sonar user
+sudo echo "sonar ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/sonar
+sudo hostnamectl set-hostname sonar
+sudo su - sonar
+```
+### Install Java JDK 17+
+
+``` sh
+hostname sonar
+cd /opt
+sudo yum -y install unzip wget git
+sudo yum install java-17-openjdk-devel -y
+
+# Download the latest SonarQube version
+sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-10.7.0.96327.zip
+
+# Unzip the archive
+sudo unzip sonarqube-10.7.0.96327.zip
+
+# Clean up the zip file
+sudo rm -rf sonarqube-10.7.0.96327.zip
+
+# Rename for consistency
+sudo mv sonarqube-10.7.0.96327 sonarqube
+
+## Grant permissions for sonar user to start and manage sonarQube
+```sh
+sudo chown -R sonar:sonar /opt/sonarqube/
+sudo chmod -R 775 /opt/sonarqube/
+# start sonarQube server
+sh /opt/sonarqube/bin/linux-x86-64/sonar.sh start 
+sh /opt/sonarqube/bin/linux-x86-64/sonar.sh status
+```
+
+
+
 
